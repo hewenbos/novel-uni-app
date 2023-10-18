@@ -60,6 +60,8 @@
 			"path": "detail/index"
 		}, {
 			"path": "reading/index"
+		}, {
+			"path": "info/index"
 		}]
 	}]
 

@@ -1,8 +1,10 @@
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
 	font-family: 'iconfont'; /* Project id 4287989 */
-	src: url('//at.alicdn.com/t/c/font_4287989_i5bxyh3d32g.woff2?t=1697546556073') format('woff2'),
-		url('//at.alicdn.com/t/c/font_4287989_i5bxyh3d32g.woff?t=1697546556073') format('woff'),
-		url('//at.alicdn.com/t/c/font_4287989_i5bxyh3d32g.ttf?t=1697546556073') format('truetype');
+	src: url('//at.alicdn.com/t/c/font_4287989_bvqdk6dnow9.woff2?t=1697638334804') format('woff2'),
+		url('//at.alicdn.com/t/c/font_4287989_bvqdk6dnow9.woff?t=1697638334804') format('woff'),
+		url('//at.alicdn.com/t/c/font_4287989_bvqdk6dnow9.ttf?t=1697638334804') format('truetype');
 }
 .iconfont {
 	font-family: 'iconfont' !important;
@@ -51,4 +53,11 @@
 }
 .icon-all:before {
 	content: '\e600';
+}
+
+.icon-more:before {
+	content: '\e78d';
+}
+.icon-xing:before {
+	content: '\e646;';
 }

@@ -2,21 +2,35 @@
 	<view class="popup">
 		<view class="chapterTitle">章节选择</view>
 		<view class="chapterList">
-			<view class="chapterItem" v-for="item in content" :key="item.id">{{ item.chapter }}</view>
+			<view class="chapterItem" :class="{ select: select == index }" @click="selectchapter(item.id)" v-for="(item, index) in content.content" :key="item.id">
+				{{ item.chapter }}
+			</view>
 		</view>
 	</view>
 </template>
 
 <script setup lang="ts">
-import type { content } from '@/types/reading';
+import type { readingResponse } from '@/types/reading';
 defineProps<{
-	content: content[];
+	content: readingResponse;
+	select: string | number;
 }>();
+
+const emits = defineEmits<{
+	(e: 'selectchapter', value: string | number);
+}>();
+
+//选择章节
+const selectchapter = (id: string | number) => {
+	emits('selectchapter', id);
+};
 </script>
 
 <style lang="scss">
 .popup {
-	width: 400rpx;
+	width: 450rpx;
+	box-sizing: border-box;
+	padding: 0 20rpx;
 	height: 100%;
 	background-color: #fff;
 	position: absolute;
@@ -39,6 +53,10 @@ defineProps<{
 			text-overflow: ellipsis;
 			height: 80rpx;
 			line-height: 80rpx;
+		}
+		.chapterItem.select {
+			background-color: #8395a7;
+			color: #fff;
 		}
 	}
 }

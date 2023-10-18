@@ -8,7 +8,7 @@
 				<view class="author">作者 : {{ bookInfo.author }}</view>
 				<view class="btn">
 					<button class="Share">分享</button>
-					<button>收藏</button>
+					<button @click="collect(bookInfo)">{{ comCollect ? '已收藏' : '收藏' }}</button>
 				</view>
 			</view>
 		</view>
@@ -41,10 +41,18 @@ import navBarRouter from '@/components/navBarRouter/index.vue';
 import { getBookListApi, getBookSynopsisApi } from '@/api/detail';
 import { onLoad } from '@dcloudio/uni-app';
 import type { listBook, BookSynopsisResponse } from '@/types/detail';
-import { ref } from 'vue';
+
+import { useCollectStore } from '@/stores/collect';
+
+import { ref, computed } from 'vue';
+const store = useCollectStore();
 onLoad((e: { bookId: string }) => {
 	getBookList(e.bookId);
 	getBookSynopsis();
+});
+
+const comCollect = computed(() => {
+	return store.collectList.some((item) => item.id == bookInfo.value.id);
 });
 
 //获取书籍列表
@@ -78,6 +86,15 @@ const goReading = (id: string | number) => {
 	uni.navigateTo({
 		url: `/subpck_home/reading/index?chapterId=${id}`
 	});
+};
+
+const collect = (bookInfo: listBook) => {
+	console.log(comCollect);
+	if (!comCollect.value) {
+		store.collectList.push(bookInfo);
+	} else {
+		store.collectList = store.collectList.filter((item) => item.id !== bookInfo.id);
+	}
 };
 </script>
 

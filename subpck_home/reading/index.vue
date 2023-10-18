@@ -9,9 +9,10 @@
 			</view>
 			<text class="bookInfo">{{ comSelectName }}</text>
 		</view>
+
 		<swiper :autoplay="false" :current="select" @change="changeChapter">
 			<swiper-item v-for="item in readingList.content" :key="item.id">
-				<view class="swiper-item" @click="selectStatus" v-html="item.text"></view>
+				<view class="swiper-item" @click="selectStatus" v-html="item.text" :style="{ 'font-size': minText + 'rpx' }"></view>
 			</swiper-item>
 		</swiper>
 		<view class="footerBox" v-show="isShow">
@@ -23,17 +24,39 @@
 				<text class="iconfont icon-eye icon"></text>
 				<view class="text">夜间模式</view>
 			</view>
-			<view class="box-item">
+			<view class="box-item" @click="isTextFont">
 				<text class="iconfont icon-text icon"></text>
 				<view class="text">字体</view>
 			</view>
-			<view class="box-item">
+			<view class="box-item" @click="moreColor">
 				<text class="iconfont icon-all icon"></text>
 				<view class="text">更多</view>
 			</view>
 		</view>
 
-		<popup v-if="isPopup" :content="readingList.content"></popup>
+		<view class="fontBox" v-show="isFont">
+			<view class="text">
+				<text>字体:</text>
+				<view class="porgree">
+					<bestjhhMovableArea :min="0" :max="100" @change="change"></bestjhhMovableArea>
+				</view>
+			</view>
+			<view class="lineHeight">
+				<text>间距:</text>
+				<view class="porgree">
+					<bestjhhMovableArea :min="0" :max="99" @change="change"></bestjhhMovableArea>
+				</view>
+			</view>
+		</view>
+
+		<view class="colorBox" v-show="isColor">
+			<view class="colorItem" @click="colorToggle(item.color, item.back)" v-for="(item, index) in colorList" :key="index">
+				<view class="colorCart" :style="{ background: item.back }"></view>
+				<text>{{ item.name }}</text>
+			</view>
+		</view>
+
+		<popup v-if="isPopup" :content="readingList" @selectchapter="selectchapter" :select="select"></popup>
 	</view>
 </template>
 
@@ -47,6 +70,7 @@ import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useToggleStore } from '@/stores/Toggle';
 import popup from './components/popup.vue';
+import bestjhhMovableArea from '@/components/bestjhh-movable-area/bestjhh-movable-area.vue';
 const { ToggleBackgrounds, ToggleColor } = storeToRefs(useToggleStore());
 
 onLoad(async (e: { chapterId: string }) => {
@@ -91,6 +115,8 @@ const isShow = ref(false);
 const selectStatus = () => {
 	isShow.value = !isShow.value;
 	isPopup.value = false;
+	isFont.value = false;
+	isColor.value = false;
 };
 
 //切换主题色
@@ -107,6 +133,71 @@ const popUp = () => {
 	isPopup.value = !isPopup.value;
 	isShow.value = false;
 };
+
+//选择章节
+
+const selectchapter = (id: string | number) => {
+	select.value = readingList.value.content.findIndex((item) => item.id == id);
+	isPopup.value = false;
+};
+
+//显示字体调整页面
+const isFont = ref(false);
+const isTextFont = () => {
+	isShow.value = false;
+	isFont.value = true;
+};
+
+//字体大小进度条
+const minText = ref(30);
+const minLine = ref(2);
+const change = (score: number, str: string) => {
+	if (str == 'text') {
+		minText.value = score;
+	} else {
+		minLine.value = score;
+	}
+};
+
+//切换颜色
+const colorList = ref([
+	{
+		color: '#ffffffb3',
+		name: '天蓝',
+		back: '#1e90ff'
+	},
+	{
+		color: '#2c2c54',
+		name: '护眼',
+		back: '#d1ccc0'
+	},
+	{
+		color: '#ffffffb3',
+		name: '淡灰',
+		back: '#747d8c'
+	},
+	{
+		color: '#2c2c54',
+		name: '早晨',
+		back: '#f8f9fa'
+	},
+	{
+		color: '#c1cbcd',
+		name: '夜间',
+		back: '#4c5662'
+	}
+]);
+const isColor = ref(false);
+
+const moreColor = () => {
+	isShow.value = false;
+	isColor.value = true;
+};
+
+const colorToggle = (color: string, back: string) => {
+	ToggleBackgrounds.value = back;
+	ToggleColor.value = color;
+};
 </script>
 
 <style lang="scss">
@@ -122,6 +213,8 @@ const popUp = () => {
 			height: 100%;
 			overflow: scroll;
 			color: v-bind(ToggleColor);
+			font-size: 30rpx;
+			line-height: v-bind(minLine);
 		}
 	}
 
@@ -184,6 +277,63 @@ const popUp = () => {
 				color: v-bind(ToggleColor);
 				margin-top: 10rpx;
 			}
+		}
+	}
+	.fontBox {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		height: 200rpx;
+		width: 100%;
+		z-index: 999;
+		background-color: v-bind(ToggleBackgrounds);
+		box-sizing: border-box;
+		padding: 30rpx;
+		animation: identifier2 0.5s linear;
+		.text {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20rpx;
+			text {
+				font-size: 40rpx;
+				margin-right: 10rpx;
+			}
+			.porgree {
+				flex: 1;
+			}
+		}
+		.lineHeight {
+			display: flex;
+			align-items: center;
+			text {
+				font-size: 40rpx;
+				margin-right: 10rpx;
+			}
+			.porgree {
+				flex: 1;
+			}
+		}
+	}
+	.colorBox {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		height: 200rpx;
+		width: 100%;
+		z-index: 999;
+		background-color: v-bind(ToggleBackgrounds);
+		box-sizing: border-box;
+		padding: 0 30rpx;
+		animation: identifier2 0.5s linear;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		text-align: center;
+		color: v-bind(ToggleColor);
+		.colorCart {
+			width: 100rpx;
+			height: 60rpx;
+			border-radius: 5rpx;
 		}
 	}
 }

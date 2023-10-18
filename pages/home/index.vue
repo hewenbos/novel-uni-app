@@ -8,19 +8,19 @@
 		</swiper>
 
 		<view class="navlist">
-			<view class="navItem">
+			<view class="navItem" @click="router('榜单')">
 				<text class="iconfont icon-trophy icon"></text>
 				<view class="text">看榜单</view>
 			</view>
-			<view class="navItem">
+			<view class="navItem" @click="router('小说')">
 				<text class="iconfont icon-book icon"></text>
 				<view class="text">听小说</view>
 			</view>
-			<view class="navItem">
+			<view class="navItem" @click="router('音乐')">
 				<text class="iconfont icon-reception icon"></text>
 				<view class="text">听音乐</view>
 			</view>
-			<view class="navItem">
+			<view class="navItem" @click="router('知识')">
 				<text class="iconfont icon-knowledge icon"></text>
 				<view class="text">听知识</view>
 			</view>
@@ -67,6 +67,13 @@ const getIndexData = async () => {
 
 	IndexData.value = reslut.data;
 	console.log(IndexData.value);
+};
+
+//跳页面
+const router = (text: string) => {
+	uni.navigateTo({
+		url: '/subpck_home/info/index?content=' + text
+	});
 };
 </script>
 
