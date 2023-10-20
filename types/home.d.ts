@@ -27,3 +27,21 @@ export type booksList = {
 export type swiperImagesList = {
 	src: string;
 };
+
+//音频
+export type MusicListResponse = {
+	musicResourecs: musicResourecs[];
+};
+
+export type musicResourecs = {
+	cover: string;
+	id: number;
+	name: string;
+	singer: singer;
+	src: string;
+};
+
+export type singer = {
+	name: string;
+	synopsis: string;
+};

@@ -19,12 +19,25 @@
 						{{ item.synopsis }}
 					</view>
 					<view class="icon">
-						<text class="iconfont icon-more" @click="cancelCollect(item.id)"></text>
+						<text class="iconfont icon-more" @click="cancelCollect(item.id, 'book')"></text>
 					</view>
 				</view>
 			</view>
 		</view>
-		<view class="content" v-if="active == 1"></view>
+		<view class="content" v-if="active == 1">
+			<view class="contentitem" v-for="(item, index) in musicStore.collectMusic" :key="index">
+				<image class="collectImg" :src="item.cover" mode=""></image>
+				<view class="dose">
+					<view class="bookname">{{ item.name }}</view>
+					<view class="bookdose">
+						{{ item.singer.synopsis }}
+					</view>
+					<view class="icon">
+						<text class="iconfont icon-more" @click="cancelCollect(item.id, 'music')"></text>
+					</view>
+				</view>
+			</view>
+		</view>
 
 		<uni-popup ref="popup" type="bottom">
 			<view class="main">
@@ -42,16 +55,21 @@
 <script lang="ts" setup>
 import navBarSearch from '@/components/navBarSearch/index.vue';
 import { useCollectStore } from '@/stores/collect';
+import { useMusicStore } from '@/stores/music';
 import { ref } from 'vue';
 const store = useCollectStore();
+
+const musicStore = useMusicStore();
 const active = ref(0);
 
 const popup = ref();
 //取消收藏
 const idCollect = ref();
-const cancelCollect = (id: string | number) => {
+const types = ref('');
+const cancelCollect = (id: string | number, type: string) => {
 	popup.value.open();
 	idCollect.value = id;
+	types.value = type;
 };
 
 //
@@ -60,7 +78,12 @@ const cancel = () => {
 };
 
 const collectDel = () => {
-	store.collectList = store.collectList.filter((item) => item.id !== idCollect.value);
+	if (types.value == 'book') {
+		store.collectList = store.collectList.filter((item) => item.id !== idCollect.value);
+	} else {
+		musicStore.collectMusic = musicStore.collectMusic.filter((item) => item.id !== idCollect.value);
+	}
+
 	popup.value.close();
 };
 </script>
@@ -98,7 +121,7 @@ const collectDel = () => {
 		padding: 0 30rpx;
 		.contentitem {
 			display: flex;
-
+			margin: 10rpx 0;
 			justify-content: space-between;
 			.collectImg {
 				width: 220rpx;
